@@ -1,4 +1,5 @@
 from sentence_cutter import SentenceCutter
+import re
 # merge QA pair
 # merge according to dictionary
 # merge according to grammar dependency
@@ -12,6 +13,9 @@ class PassageMerger:
         self.content = content
         self.sentence_cutter = SentenceCutter()
         self.sentences = self.sentence_cutter.cut_sentences(content)
+
+        self.re_short_title = re.compile(r'^[\d\. ]')
+        self.LEN_SHORT_TITLE = 30
 
     def merge_by_dict(self):
         sentences = self.sentences
@@ -28,11 +32,28 @@ class PassageMerger:
 
         merged_sentences.append(current_sentence)
 
-        return merged_sentences
+        self.sentences = merged_sentences
+
+    def merge_short_title(self):
+        '''
+        以数字开头的小标题，向下合并
+        '''
+        sentences = self.sentences
+        merged_sentences = []
+
+        for sentence in sentences[::-1]:
+            if self.re_short_title.match(sentence):
+                if merged_sentences != [] and len(sentence) < self.LEN_SHORT_TITLE:
+                    merged_sentences[-1] = sentence + " " + merged_sentences[-1]
+            else:
+                merged_sentences.append(sentence)
+
+        self.sentences = merged_sentences[::-1]
 
     def merge(self):
-        passages = self.merge_by_dict()
-        return passages
+        self.merge_by_dict()
+        self.merge_short_title()
+        return self.sentences
 
 
 if __name__ == '__main__':
