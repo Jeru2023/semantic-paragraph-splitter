@@ -44,7 +44,7 @@ class SentenceCutter:
 
 if __name__ == '__main__':
     sc = SentenceCutter()
-    paragraph = "today is a very nice day, i'm feeling good. how about you?"
-    #paragraph = "在很久很久以前......。。... 有座山，山里有座庙啊!!!!!!!庙里竟然有个老和尚！？。。。。"
+    #paragraph = "today is a very nice day, i'm feeling good. how about you?"
+    paragraph = "美元指数回落至104下方，非美货币涨跌互现，人民币小幅贬值：人民币即期汇率收于7.1984（+57pips），日元-0.22%、韩元+0.33%、欧元+0.42%、加元+0.06%、澳元+0.83%、英榜+0.43%。"
     result = sc.cut_sentences(paragraph)
     print(result)
