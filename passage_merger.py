@@ -5,8 +5,9 @@ import re
 
 # 如果一句话中出现以下词语, 则向上合并
 MERGE_DICT = ["因此", "因为", "并且", "所以", "但是", "而且", "然而", "可是", "另外", "此外"]
+RE_SHORT_TITLE = re.compile(r'^[\d. ]')
 SMALL_PARAGRAPH_LENGTH = 500
-
+LEN_SHORT_TITLE = 30
 
 class PassageMerger:
     def __init__(self, content):
@@ -14,8 +15,6 @@ class PassageMerger:
         self.sentence_cutter = SentenceCutter()
         self.sentences = self.sentence_cutter.cut_sentences(content)
 
-        self.re_short_title = re.compile(r'^[\d. ]')
-        self.LEN_SHORT_TITLE = 30
 
     def merge_by_dict(self):
         sentences = self.sentences
@@ -38,17 +37,42 @@ class PassageMerger:
         """
         以数字开头的小标题，向下合并
         """
-        sentences = self.sentences
-        merged_sentences = []
+        reversed_sentences = list(reversed(self.sentences))
 
-        for sentence in sentences[::-1]:
-            if self.re_short_title.match(sentence):
-                if merged_sentences != [] and len(sentence) < self.LEN_SHORT_TITLE:
-                    merged_sentences[-1] = sentence + " " + merged_sentences[-1]
-            else:
-                merged_sentences.append(sentence)
+        for index, sentence in enumerate(reversed_sentences, start=0):
+            if len(sentence) < LEN_SHORT_TITLE:
+                clean_sentence = sentence.strip()
+                if RE_SHORT_TITLE.match(clean_sentence):
+                    title_index = reversed_sentences.index(sentence)
+                    prev_index = title_index-1
 
-        self.sentences = merged_sentences[::-1]
+                    new_sentence = reversed_sentences[title_index] + reversed_sentences[prev_index]
+
+                    del reversed_sentences[title_index]
+                    del reversed_sentences[prev_index]
+                    reversed_sentences.insert(prev_index, new_sentence)
+
+        self.sentences = list(reversed(reversed_sentences))
+
+    def merge_by_small_paragraph(self, passages):
+        # 根据换行符拆分
+        paras = self.content.split(' ')
+
+        for index, para in enumerate(paras, start=0):
+            para = para.strip()
+            if len(para) <= SMALL_PARAGRAPH_LENGTH:
+                para_sentences = self.sentence_cutter.cut_sentences(para)
+
+                first_sentence = para_sentences[0]
+                last_sentence = para_sentences[-1]
+
+                first_sentence_index = passages.index(first_sentence)
+                last_sentence_index = passages.index(last_sentence)
+
+                del passages[first_sentence_index:last_sentence_index]
+                passages.insert(first_sentence_index, para)
+
+        return passages
 
     def merge(self):
         self.merge_by_dict()
