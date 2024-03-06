@@ -2,6 +2,6 @@
 
 <div align="center">
   <a href="https://github.com/Jeru2023/">
-    <img src="images/architect.png" alt="Logo" width="400" height="200">
+    <img src="images/architect.png" alt="architect">
   </a>
 </div>
