@@ -4,7 +4,7 @@ from sentence_cutter import SentenceCutter
 # merge according to grammar dependency
 
 # 如果一句话中出现以下词语, 则向上合并
-MERGE_DICT = ["因此", "因为", "并且", "所以", "但是", "而且", "然而", "可是", "另外"]
+MERGE_DICT = ["因此", "因为", "并且", "所以", "但是", "而且", "然而", "可是", "另外", "此外"]
 
 
 class PassageMerger:
