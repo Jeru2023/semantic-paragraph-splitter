@@ -11,7 +11,7 @@ df = df.head(30)
 df = df[['source', 'content']]
 
 
-sys.stdout = open('output/domestic_report_split_output.txt', 'wt')
+sys.stdout = open('output/industry_report_split_output.txt', 'wt')
 
 for index, row in df.iterrows():
     pc = ParagraphCutter(row['content'])

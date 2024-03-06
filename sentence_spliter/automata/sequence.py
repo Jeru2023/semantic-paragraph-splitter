@@ -37,6 +37,11 @@ class StrSequence:
         self.book_right = 0
         self.symbols = symbols
 
+        self.__candidate_len = 0
+        self.s_quota_en = 0
+        self.s_quota_left = 0
+        self.is_blank = re.compile('^\s+')
+
     # -- magic method -- #
     def __str__(self):
         return self.value[self.sentence_start:self.v_pointer]
