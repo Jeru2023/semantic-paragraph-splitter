@@ -1,11 +1,11 @@
 from sentence_cutter import SentenceCutter
 import re
 # merge QA pair
-# merge according to dictionary
 # merge according to grammar dependency
 
 # 如果一句话中出现以下词语, 则向上合并
 MERGE_DICT = ["因此", "因为", "并且", "所以", "但是", "而且", "然而", "可是", "另外", "此外"]
+SMALL_PARAGRAPH_LENGTH = 500
 
 
 class PassageMerger:
@@ -14,7 +14,7 @@ class PassageMerger:
         self.sentence_cutter = SentenceCutter()
         self.sentences = self.sentence_cutter.cut_sentences(content)
 
-        self.re_short_title = re.compile(r'^[\d\. ]')
+        self.re_short_title = re.compile(r'^[\d. ]')
         self.LEN_SHORT_TITLE = 30
 
     def merge_by_dict(self):
@@ -35,9 +35,9 @@ class PassageMerger:
         self.sentences = merged_sentences
 
     def merge_short_title(self):
-        '''
+        """
         以数字开头的小标题，向下合并
-        '''
+        """
         sentences = self.sentences
         merged_sentences = []
 

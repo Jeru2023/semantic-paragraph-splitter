@@ -10,7 +10,7 @@ class ParagraphCutter:
         pass
 
     def cut_paragraph(self):
-        passages = self.passage_merger.merge_by_dict()
+        passages = self.passage_merger.merge()
         chunks = self.semantic_paragraph_splitter.split_passages(passages)
         return chunks
 
