@@ -4,17 +4,17 @@ import re
 # merge according to grammar dependency
 
 # 如果一句话中出现以下词语, 则向上合并
-MERGE_DICT = ["因此", "因为", "并且", "所以", "但是", "而且", "然而", "可是", "另外", "此外"]
+MERGE_DICT = ["因此", "因为", "并且", "所以", "但是", "而且", "然而", "可是", "另外", "此外", "其中", "比如", "例如", "上述"]
 RE_SHORT_TITLE = re.compile(r'^[\d.]')
 SMALL_PARAGRAPH_LENGTH = 500
 LEN_SHORT_TITLE = 30
+
 
 class PassageMerger:
     def __init__(self, content):
         self.content = content
         self.sentence_cutter = SentenceCutter()
         self.sentences = self.sentence_cutter.cut_sentences(content)
-
 
     def merge_by_dict(self):
         sentences = self.sentences

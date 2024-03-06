@@ -2,23 +2,20 @@
 from ltp import StnSplit
 from sentence_transformers import SentenceTransformer
 import numpy as np
+from sentence_cutter import SentenceCutter
 
 BGE_LARGE = 'BAAI/bge-large-zh-v1.5'
 BGE_M3 = 'BAAI/bge-m3'
 ACGE_LARGE = 'aspire/acge-large-zh'
 # If you want more chunks, lower the threshold
-THRESHOLD = 90
+THRESHOLD = 95
 
 
 class SemanticParagraphSplitter:
     def __init__(self, threshold=THRESHOLD, model_path=BGE_M3):
         self.threshold = threshold
         self.model = SentenceTransformer(model_path)
-
-    @staticmethod
-    def cut_sentences(text):
-        sentences = StnSplit().split(text)
-        return sentences
+        self.sentence_cutter = SentenceCutter()
 
     @staticmethod
     def combine_sentences(sentences, buffer_size=1):
@@ -33,7 +30,7 @@ class SemanticParagraphSplitter:
                 # Check if the index j is not negative (to avoid index out of range like on the first one)
                 if j >= 0:
                     # Add the sentence at index j to the combined_sentence string
-                    combined_sentence += sentences[j]['sentence'] + ' '
+                    combined_sentence += sentences[j]['sentence'][-30:] + ' '
 
             # Add the current sentence
             combined_sentence += sentences[i]['sentence']
@@ -43,7 +40,7 @@ class SemanticParagraphSplitter:
                 # Check if the index j is within the range of the sentences list
                 if j < len(sentences):
                     # Add the sentence at index j to the combined_sentence string
-                    combined_sentence += ' ' + sentences[j]['sentence']
+                    combined_sentence += ' ' + sentences[j]['sentence'][:30]
 
             # Then add the whole thing to your dict
             # Store the combined sentence in the current sentence dict
@@ -52,7 +49,7 @@ class SemanticParagraphSplitter:
         return sentences
 
     def build_sentences_dict(self, sentences):
-        indexed_sentences = [{'sentence': x, 'index': i} for i, x in enumerate(sentences)]
+        indexed_sentences = [{'sentence': x.strip(), 'index': i} for i, x in enumerate(sentences)]
         combined_sentences = self.combine_sentences(indexed_sentences)
 
         embeddings = self.model.encode([x['combined_sentence'] for x in combined_sentences], normalize_embeddings=True)
@@ -90,6 +87,7 @@ class SemanticParagraphSplitter:
         breakpoint_distance_threshold = np.percentile(distances, self.threshold)
         # The indices of those breakpoints on your list
         indices_above_thresh = [i for i, x in enumerate(distances) if x > breakpoint_distance_threshold]
+        print('indices above thresh', indices_above_thresh)
         return indices_above_thresh
 
     @staticmethod
@@ -121,7 +119,7 @@ class SemanticParagraphSplitter:
         return chunks
 
     def split(self, text):
-        single_sentences = sps.cut_sentences(content)
+        single_sentences = self.sentence_cutter.cut_sentences(text)
         print(f"{len(single_sentences)} single sentences were found")
         chunks = self.split_passages(single_sentences)
         return chunks

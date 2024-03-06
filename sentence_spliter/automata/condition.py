@@ -383,8 +383,7 @@ class IsRightSingleQuotaEn(SpecialCondition):
         self.blank = re.compile('\s')
 
     def accept(self, state: EnSequence) -> bool:
-        if self.symbols['s_quota_en'].match(state.current_value) and state.s_quota_en % 2 == 0 or self.symbols[
-            's_quota_right'].match(state.current_value):
+        if self.symbols['s_quota_en'].match(state.current_value) and state.s_quota_en % 2 == 0 or self.symbols['s_quota_right'].match(state.current_value):
             return True
 
         return False
