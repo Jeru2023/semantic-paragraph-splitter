@@ -44,17 +44,18 @@ class IsEndSymbolZH(Criteria):
             return state.current_value
 
     def accept(self, state: StrSequence) -> bool:
+        if self.symbols['en_dot'].match(state.current_value):
+            if self.number.match(state.next_value):
+                return False
+            else:
+                return True
         if self.symbols['end_symbols'].match(state.current_value) and not self.symbols['all_symbols'].match(
                 self.look_forward(state)):
             return True
         if (self.is_right_quota(state) or self.is_right_s_quota(state)) and self.symbols['end_symbols'].match(
                 self.look_backward(state)):
             return True
-        if self.symbols['en_dot'].match(state.current_value):
-            if self.number.match(state.next_value):
-                return False
-            else:
-                return True
+
         return False
 
 

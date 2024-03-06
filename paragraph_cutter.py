@@ -20,7 +20,7 @@ class ParagraphCutter:
 
 if __name__ == '__main__':
     pc = ParagraphCutter()
-    # paragraph = "today is a very nice day, i'm feeling good. how about you?"
+    #paragraph = "today is a very nice day, i'm feeling good. how about you?"
     paragraph = """
     1月M2增速为什么快速下滑？。
 核心观点：2024年1月M2同比增长8.7%，增速回落1pct，处于历史较低水平。M2当月新增5.35万亿元，同比少增约2万亿元，带来M2增速快速下滑。为什么会出现同比大幅少增的现象，首先要拆解M2从何处派生。
