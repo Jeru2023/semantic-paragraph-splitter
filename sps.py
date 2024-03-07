@@ -7,12 +7,13 @@ from sentence_cutter import SentenceCutter
 BGE_LARGE = 'BAAI/bge-large-zh-v1.5'
 BGE_M3 = 'BAAI/bge-m3'
 ACGE_LARGE = 'aspire/acge-large-zh'
+M3E_SMALL = 'moka-ai/m3e-base'
 # If you want more chunks, lower the threshold
 THRESHOLD = 95
 
 
 class SemanticParagraphSplitter:
-    def __init__(self, threshold=THRESHOLD, model_path=BGE_M3):
+    def __init__(self, threshold=THRESHOLD, model_path=M3E_SMALL):
         self.threshold = threshold
         self.model = SentenceTransformer(model_path)
         self.sentence_cutter = SentenceCutter()
