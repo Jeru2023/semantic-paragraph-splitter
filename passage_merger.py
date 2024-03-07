@@ -1,5 +1,6 @@
 from sentence_cutter import SentenceCutter
 import re
+from my_utils import timer
 # merge QA pair
 # merge according to grammar dependency
 
@@ -74,6 +75,7 @@ class PassageMerger:
 
         return passages
 
+    @timer
     def merge(self):
         self.merge_by_dict()
         self.merge_short_title()

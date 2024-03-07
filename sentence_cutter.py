@@ -8,6 +8,7 @@ from sentence_spliter.automata.sequence import EnSequence
 from sentence_spliter.logic_graph import long_short_cuter
 from sentence_spliter.automata.sequence import StrSequence
 import spacy
+from my_utils import timer
 
 
 class SentenceCutter:
@@ -31,6 +32,7 @@ class SentenceCutter:
         sentences = sequence.sentence_list()
         return sentences
 
+    @timer
     def cut_sentences(self, text):
         lang = detect(text)
         #print(lang)
