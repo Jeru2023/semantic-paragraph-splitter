@@ -7,8 +7,9 @@ from my_utils import timer
 # 如果一句话中出现以下词语, 则向上合并
 MERGE_DICT = ["因此", "因为", "并且", "所以", "但是", "而且", "然而", "可是", "另外", "此外", "其中", "比如", "例如", "上述", "期间"]
 RE_SHORT_TITLE = re.compile(r'^[\d.]')
-SMALL_PARAGRAPH_LENGTH = 500
 LEN_SHORT_TITLE = 30
+SMALL_PARAGRAPH_LENGTH = 300  # 定义短段落字数
+SMALL_PARAGRAPH_SENTENCE_COUNT_LIMIT = 3  # 定义短段落句子数量
 
 
 class PassageMerger:
@@ -45,7 +46,7 @@ class PassageMerger:
                 clean_sentence = sentence.strip()
                 if RE_SHORT_TITLE.match(clean_sentence):
                     title_index = reversed_sentences.index(sentence)
-                    prev_index = title_index-1
+                    prev_index = title_index - 1
 
                     new_sentence = reversed_sentences[title_index] + reversed_sentences[prev_index]
 
@@ -56,7 +57,12 @@ class PassageMerger:
         self.sentences = list(reversed(reversed_sentences))
 
     def merge_by_small_paragraph(self, passages):
-        # 根据换行符拆分
+        """
+        根据换行符对原content进行拆分成段落列表paragraph_content
+        将sentence_cutter之后的sentence与paragraph_content比较，做一下处理：
+            paragraph_content小于等于：SMALL_PARAGRAPH_LENGTH或SMALL_PARAGRAPH_SENTENCE_COUNT_LIMIT
+            paragraph_content中的sentence，需要进行合并
+        """
         paras = self.content.split(' ')
 
         for index, para in enumerate(paras, start=0):
