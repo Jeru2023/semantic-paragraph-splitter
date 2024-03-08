@@ -45,15 +45,13 @@ class Gemini:
             try:
                 genai.configure(api_key=random.choice(self.api_key))
                 model = genai.GenerativeModel(model_name="gemini-pro",
-                                      generation_config=self.generation_config,
-                                      safety_settings=self.safety_settings
-                                      )
+                                              generation_config=self.generation_config,
+                                              safety_settings=self.safety_settings
+                                              )
                 response = model.generate_content(msg)
-
                 return response.text
             except:
-                cnt+=1
-                if cnt >5:
+                if cnt > 5:
                     break
                 continue
             else:
@@ -71,7 +69,7 @@ class Gemini:
 
 
 if __name__ == '__main__':
-    #os.system("curl ip.sb")
+    # os.system("curl ip.sb")
 
     gemini = Gemini()
     msg = """
