@@ -117,6 +117,14 @@ result = ec.cut_paragraph()
 ## LLM Cut
 TODO: Add retry logic, key pooling, multithread.
 
+Gemini Pro 1.0 不适合做这种任务，因为output token length太短。
+
+Input token limit	30720
+
+Output token limit	2048
+
+目前测试ChatGLM 32K
+
 LLM Cut效果最佳, 但延时较长，适用于离线切割文本。
 
 Prompt:
