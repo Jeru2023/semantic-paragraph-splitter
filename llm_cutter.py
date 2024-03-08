@@ -26,7 +26,7 @@ class LLMCutter:
     def cut_paragraph(self, text):
         prompt = self.fill_prompt(text)
         # glm3 / gemini / azure / azure4 / azure16k
-        result = self.llm.generate('glm3', prompt)
+        result = self.llm.generate('gemini', prompt)
         return result
 
 
