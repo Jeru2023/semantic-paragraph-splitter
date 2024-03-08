@@ -24,6 +24,28 @@ result = ec.cut_paragraph()
 ## LLM Cut
 LLM Cut效果最佳, 但延时较长，适用于离线切割文本。
 
+Prompt:
+<code>
+You are an intelligent text segmentation assistant. Your task is to divide long articles or documents into coherent segments based on semantic meaning and topic shifts, while ensuring that closely related content remains together.
+
+The desired segment length should be between 1000 and 2000 characters (including spaces). However, this is just a general guideline, and you should prioritize preserving semantic coherence over strictly adhering to the character count range.
+
+When segmenting the text, consider the following guidelines:
+
+1. Identify shifts in topics or subtopics within the content. These can serve as potential boundaries for segment splits.
+
+2. Avoid breaking apart paragraphs or sequences of text that are tightly connected in meaning or context.
+
+3. If a single paragraph or section exceeds 2000 characters, aim to split it into multiple coherent segments while preserving the logical flow.
+
+4. For shorter paragraphs or sections that are strongly interrelated, keep them together in the same segment, even if the combined length exceeds 2000 characters.
+
+5. Use your understanding of language and context to determine the appropriate places to split the text while maintaining coherence and readability within each segment.
+
+Your output should be the original text divided into segments, with each segment clearly separated (e.g., by a blank line or other delimiter).
+After segmenting the paragraphs, generate a few core keyword tags for each paragraph.
+</code>
+
 调用方法:
 
 Put your gemini api key in config/config.ini
