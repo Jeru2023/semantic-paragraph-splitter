@@ -6,6 +6,43 @@
   </a>
 </div>
 
+## Sentence Cut
+TODO: 动态配置中英文双语的参数
+
+中英文用了两个不同的切割库，修复了中文库中的bug
+
+1. 支持中英文双语切割, 检测语言后自动调用相应的切割包
+
+2. 可以设置切句长度的上限和下限
+
+3. 能处理单双引号的切句
+
+4. 支持多个标点符号连接在一起的切割
+
+5. 对中文文本中数字后带英文句号的场景正确切割
+
+调用方法:
+```python
+paragraph = """
+    “不加修饰”也通过愉悦的视角，赋予了多元化设计许多可能性。1.2 “Pardon"这一命名本身便蕴含着幽默，虽是表达歉意的单词，但这款字体本身却相当坚持个性。人民币小幅贬值：人民币即期汇率收于7.1984（+57pips)
+"""
+from sentence_cutter import SentenceCutter
+
+sc = SentenceCutter()
+sentences = sc.cut_sentences(paragraph)
+print('number of sentences:', len(sentences))
+for sentence in sentences:
+    print(sentence.strip())
+```
+
+输出:
+<code>
+number of sentences: 3
+“不加修饰”也通过愉悦的视角，赋予了多元化设计许多可能性。
+1.2 “Pardon"这一命名本身便蕴含着幽默，虽是表达歉意的单词，但这款字体本身却相当坚持个性。
+人民币小幅贬值：人民币即期汇率收于7.1984（+57pips)
+</code>
+
 ## Extract Keywords
 TODO: to support english text extraction; optimze algo for chinese text.
 
