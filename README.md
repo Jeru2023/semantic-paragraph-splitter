@@ -10,7 +10,7 @@
 Cloe the project from repo.
 ```
 pip install -r requirements.txt
-```python
+```
 
 ## Sentence Cut
 TODO: 动态配置中英文双语的参数
