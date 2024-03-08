@@ -61,44 +61,115 @@ class PassageMerger:
     def merge_by_small_paragraph(self):
         """
         根据换行符对原content进行拆分成段落列表paragraph_content
-        将sentence_cutter之后的sentence与paragraph_content比较，做一下处理：
-            paragraph_content小于等于：SMALL_PARAGRAPH_LENGTH或SMALL_PARAGRAPH_SENTENCE_COUNT_LIMIT
-            paragraph_content中的sentence，需要进行合并
-
-        本方法主要作用是，对于小段落中的sentences提前进行合并
+        遍历sentences列表，对每一个sentence进行属性标注：
+            1、sentence所在的段落，满足small_paragraphh，需要合并（向上合并、向下合并、两边合并）
+                也可能不合并，存在sentence == small_paragraphh的情况（不合并）
+            2、sentence所在的段落，不满足small_paragraphh，不需要合并（不合并）
+            3、特殊情况处理。sentence包含small_paragraphh（不合并）
+            4、特殊情况处理。sentence和small_paragraph相互交叉
+                1）small_paragraph尾部与sentence交叉（向上合并）
+                2）small_paragraph首部与sentence交叉（向下合并）
         """
         content = self.content
         paragraph_content = SMALL_PARAGRAPH_RE_SPLIT.split(content)
         sentences = self.sentences
+        sentences_mark = []
         merged_sentences = []
 
-        for sentence in sentences:
-            if content.strip().startswith(sentence.strip()):
-                pass
+        """
+        status记录sentence和paragraph当前的交叉状态
+            head_align：sentence与paragraph头部齐
+            tail_align：sentence与paragraph尾部齐
+            sent_in_para: paragraph包含sentence
+            para_in_sent: sentence包含paragraph
+            para_head：paragraph的头部比sentence头部多
+            sent_head：sentence的头部比paragraph头部多
+        """
+        status = 'head_align'  # 开始状态
 
-        for para in paragraph_content:
-            para_sent = SMALL_PARAGRAPH_END_SYMBOLS.split(para)
-            if len(para) <= SMALL_PARAGRAPH_LENGTH:
-                pass
+        while sentences:
+            while True:
+                paragraph_strip = paragraph_content[0].strip()
+                if paragraph_strip != '':
+                    break
+                del paragraph_content[0]
+            sentence_strip = sentences[0].strip()
+
+            if sentence_strip == paragraph_strip:
+                # sentence == paragraphh的情况，不合并
+                merged_sentences.append(sentences[0])
+                del paragraph_content[0]
+                del sentences[0]
+                status = 'head_align'
                 continue
-            if len(para_sent) <= SMALL_PARAGRAPH_SENTENCE_COUNT_LIMIT:
-                pass
 
-        # paras = self.content.split(' ')
+            flag = 0
+            while paragraph_strip in sentence_strip:
+                # 3、特殊情况处理。sentence包含small_paragraphh（不合并）
+                if sentence_strip.endswith(paragraph_strip):
+                    status = 'tail_align'
+                    flag = 1
+                    break
+                del paragraph_content[0]
+                paragraph_strip = paragraph_content[0].strip()
+                status = 'sent_head'  # 循环para_in_sent一直到sent_head(交叉情形处理)或tail_align
+            if flag == 1:
+                # 对于上述情况继续处理
+                merged_sentences.append(sentences[0])
+                del paragraph_content[0]
+                del sentences[0]
+                status = 'head_align'
+                continue
 
-        # for index, para in enumerate(paras, start=0):
-        #     para = para.strip()
-        #     if len(para) <= SMALL_PARAGRAPH_LENGTH:
-        #         para_sentences = self.sentence_cutter.cut_sentences(para)
+            # 前面不合并的情形，不需要判断flag_small_paragrah
+            if len(paragraph_strip) <= SMALL_PARAGRAPH_LENGTH or len(SMALL_PARAGRAPH_END_SYMBOLS.split(paragraph_strip)) <= SMALL_PARAGRAPH_SENTENCE_COUNT_LIMIT:
+                flag_small_paragrah = 1
+            else:
+                flag_small_paragrah = 2
 
-        #         first_sentence = para_sentences[0]
-        #         last_sentence = para_sentences[-1]
+            # 1、2情况
+            if sentence_strip in paragraph_strip:
+                if flag_small_paragrah == 1:
+                    # 1、sentence所在的段落，满足small_paragraphh，需要合并（向上合并、向下合并、两边合并）
+                    if paragraph_strip.endswith(sentence_strip):
+                        merged_sentences[-1] += sentences[0]
+                        del paragraph_content[0]
+                        del sentences[0]
+                        status = 'head_align'
+                        continue
+                    if paragraph_strip.startswith(sentence_strip):
+                        merged_sentences.append(sentences[0])
+                        # del paragraph_content[0]
+                        del sentences[0]
+                        status = 'para_head'
+                        continue
+                    merged_sentences[-1] += sentences[0]
+                    # del paragraph_content[0]
+                    del sentences[0]
+                    status = 'para_head'
+                    continue
+                # 2、sentence所在的段落，不满足small_paragraphh，不需要合并（不合并）
+                merged_sentences.append(sentences[0])
+                # del paragraph_content[0]
+                del sentences[0]
+                status = 'para_head'
+                continue
 
-        #         first_sentence_index = passages.index(first_sentence)
-        #         last_sentence_index = passages.index(last_sentence)
-
-        #         del passages[first_sentence_index:last_sentence_index]
-        #         passages.insert(first_sentence_index, para)
+            # 4、特殊情况处理。sentence和small_paragraph相互交叉
+            # 1）small_paragraph尾部与sentence交叉（向上合并）
+            if status == 'para_head' and flag_small_paragrah == 1:
+                merged_sentences[-1] += sentences[0]
+                del paragraph_content[0]
+                del sentences[0]
+                status = 'para_head'
+                continue
+            # 2）small_paragraph首部与sentence交叉（向下合并）
+            if status == 'sent_head' and flag_small_paragrah == 1:
+                merged_sentences.append(sentences[0])
+                del sentences[0]
+                del paragraph_content[0]
+                status = 'sent_head'
+                continue
 
         self.sentences = merged_sentences
 
@@ -106,6 +177,7 @@ class PassageMerger:
     def merge(self):
         self.merge_by_dict()
         self.merge_short_title()
+        self.merge_by_small_paragraph()
         return self.sentences
 
 
