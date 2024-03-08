@@ -156,15 +156,21 @@ class PassageMerger:
 
             # 4、特殊情况处理。sentence和small_paragraph相互交叉
             # 1）small_paragraph尾部与sentence交叉（向上合并）
-            if status == 'para_head' and flag_small_paragrah == 1:
-                merged_sentences[-1] += sentences[0]
+            if status == 'para_head':
+                if flag_small_paragrah == 1:
+                    merged_sentences[-1] += sentences[0]
+                else:
+                    merged_sentences.append(sentences[0])
                 del paragraph_content[0]
                 del sentences[0]
                 status = 'para_head'
                 continue
             # 2）small_paragraph首部与sentence交叉（向下合并）
-            if status == 'sent_head' and flag_small_paragrah == 1:
-                merged_sentences.append(sentences[0])
+            if status == 'sent_head':
+                if flag_small_paragrah == 1:
+                    merged_sentences.append(sentences[0])
+                else:
+                    merged_sentences.append(sentences[0])
                 del sentences[0]
                 del paragraph_content[0]
                 status = 'sent_head'
