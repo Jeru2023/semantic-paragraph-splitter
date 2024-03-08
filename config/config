@@ -1,0 +1,5 @@
+[base]
+log_level = INFO
+
+[gemini]
+key = YOUR_KEY
