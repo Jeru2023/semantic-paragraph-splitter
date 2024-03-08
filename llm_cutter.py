@@ -1,11 +1,14 @@
 # -*- encoding: utf-8 -*-
+from llms.llm import ChatLlm
 from my_utils import timer, load_text
-from llms.gemini import Gemini
 from loguru import logger
+
 
 class LLMCutter:
     def __init__(self):
-        self.gemini = Gemini()
+        # self.gemini = Gemini()
+        # self.glm3 = Glm()
+        self.llm = ChatLlm()
 
     @staticmethod
     def load_prompt_template():
@@ -15,7 +18,6 @@ class LLMCutter:
 
     def fill_prompt(self, text):
         prompt = self.load_prompt_template()
-
         prompt = prompt.format(content=text)
         logger.debug(f"prompt: {prompt}")
         return prompt
@@ -23,7 +25,8 @@ class LLMCutter:
     @timer
     def cut_paragraph(self, text):
         prompt = self.fill_prompt(text)
-        result = self.gemini.generate(prompt)
+        # glm3 / gemini / azure / azure4 / azure16k
+        result = self.llm.generate('glm3', prompt)
         return result
 
 
