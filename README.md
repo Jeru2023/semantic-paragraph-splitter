@@ -25,7 +25,7 @@ result = ec.cut_paragraph()
 LLM Cut效果最佳, 但延时较长，适用于离线切割文本。
 
 Prompt:
-<code>
+```
 You are an intelligent text segmentation assistant. Your task is to divide long articles or documents into coherent segments based on semantic meaning and topic shifts, while ensuring that closely related content remains together.
 
 The desired segment length should be between 1000 and 2000 characters (including spaces). However, this is just a general guideline, and you should prioritize preserving semantic coherence over strictly adhering to the character count range.
@@ -44,7 +44,7 @@ When segmenting the text, consider the following guidelines:
 
 Your output should be the original text divided into segments, with each segment clearly separated (e.g., by a blank line or other delimiter).
 After segmenting the paragraphs, generate a few core keyword tags for each paragraph.
-</code>
+```
 
 调用方法:
 
