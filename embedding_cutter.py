@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 from sps import SemanticParagraphSplitter
 from passage_merger import PassageMerger
+from tag_extractor import TagExtractor
 from my_utils import timer
 import json
 
@@ -8,11 +9,12 @@ import json
 class EmbeddingCutter:
     def __init__(self, text):
         self.semantic_paragraph_splitter = SemanticParagraphSplitter()
+        self.tag_extractor = TagExtractor()
         self.passage_merger = PassageMerger(text)
         pass
 
     @timer
-    def cut_paragraph(self):
+    def cut_paragraph(self, withTag=True):
         passages = self.passage_merger.merge()
         chunks = self.semantic_paragraph_splitter.split_passages(passages)
 
@@ -20,6 +22,11 @@ class EmbeddingCutter:
         for chunk in chunks:
             para_dict = {}
             para_dict["paragraph"] = chunk
+
+            if withTag:
+                tags = self.tag_extractor.extract(chunk)
+                para_dict["tags"] = tags
+
             result.append(para_dict)
 
         json_str = json.dumps(result, ensure_ascii=False, indent=4)
@@ -55,6 +62,3 @@ if __name__ == '__main__':
     result = ec.cut_paragraph()
 
     print(result)
-    # for index, chunk in enumerate(result, start=0):  # Python indexes start at zero
-    #     print('==============')
-    #     print(index, chunk)
