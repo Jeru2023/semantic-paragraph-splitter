@@ -11,12 +11,11 @@
 ## LLM Cut
 LLM Cut效果最佳, 但延时较长，适用于离线切割文本。
 
+调用方法:
+
 Put your gemini api key in config/config.ini
 
 Make sure your proxy route in Japan or US, keep "Enhanced Mode" on.
-
-调用方法:
-
 ```python
 from llm_cutter import LLMCutter
   
