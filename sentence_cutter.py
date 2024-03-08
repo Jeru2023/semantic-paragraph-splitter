@@ -1,7 +1,5 @@
 # -*- encoding: utf-8 -*-
 from langdetect import detect
-#from langdetect import detect_langs
-from sentence_spliter import spliter
 from sentence_spliter.logic_graph_en import long_cuter_en
 from sentence_spliter.automata.state_machine import StateMachine
 from sentence_spliter.automata.sequence import EnSequence
@@ -62,17 +60,23 @@ if __name__ == '__main__':
         #"美元指数回落至104下方，非美货币涨跌互现，人民币小幅贬值：人民币即期汇率收于7.1984（+57pips），日元-0.22%、韩元+0.33%、欧元+0.42%、加元+0.06%、澳元+0.83%、英榜+0.43%。",
 
         """
-
-“不加修饰”也通过愉悦的视角，赋予了多元化设计许多可能性。“Pardon'这一命名本身便蕴含着幽默，虽是表达歉意的单词，但这款字体本身却相当坚持个性。
-
-"""
+        “不加修饰”也通过愉悦的视角，赋予了多元化设计许多可能性。1.2 “Pardon"这一命名本身便蕴含着幽默，虽是表达歉意的单词，但这款字体本身却相当坚持个性。人民币小幅贬值：人民币即期汇率收于7.1984（+57pips)
+        """
     ]
 
-    result = [sc.cut_sentences(para) for para in paragraph]
-    print('# of sents ', len(result[0]))
-    for chunk in result[0]:
-        print('----------------')
-        print(chunk)
+    paragraph = """
+    “不加修饰”也通过愉悦的视角，赋予了多元化设计许多可能性。1.2 “Pardon"这一命名本身便蕴含着幽默，虽是表达歉意的单词，但这款字体本身却相当坚持个性。人民币小幅贬值：人民币即期汇率收于7.1984（+57pips)
+    """
+
+    sentences = sc.cut_sentences(paragraph)
+    print('number of sentences:', len(sentences))
+    for sentence in sentences:
+        print(sentence.strip())
+
+    # sentences = [sc.cut_sentences(para) for para in paragraph]
+    # print('# of sentences ', len(result[0]))
+    # for chunk in result[0]:
+    #     print(chunk.strip())
 
     # split first element in paragraph by \n
     # paras = paragraph[0].split('\n')

@@ -14,7 +14,7 @@ class EmbeddingCutter:
         pass
 
     @timer
-    def cut_paragraph(self, withTag=True):
+    def cut_paragraph(self, with_tags=True):
         passages = self.passage_merger.merge()
         chunks = self.semantic_paragraph_splitter.split_passages(passages)
 
@@ -23,7 +23,7 @@ class EmbeddingCutter:
             para_dict = {}
             para_dict["paragraph"] = chunk
 
-            if withTag:
+            if with_tags:
                 tags = self.tag_extractor.extract(chunk)
                 para_dict["tags"] = tags
 
