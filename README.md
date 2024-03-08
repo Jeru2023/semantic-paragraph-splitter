@@ -27,6 +27,11 @@ tags = tag_extractor.extract(content)
 print(tags)
 ```
 
+输出:
+<code>
+['雅化', '锂盐', '锂矿', '港量', '矿端']
+</code>
+
 ## Embedding Cut
 TODO: Add multithread, exception catch
 
