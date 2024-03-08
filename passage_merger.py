@@ -74,7 +74,7 @@ class PassageMerger:
 
         for sentence in sentences:
             if content.strip().startswith(sentence.strip()):
-                
+                pass
 
         for para in paragraph_content:
             para_sent = SMALL_PARAGRAPH_END_SYMBOLS.split(para)
