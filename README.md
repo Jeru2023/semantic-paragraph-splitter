@@ -11,15 +11,18 @@
 Put your gemini api key in config/config.ini
 Make sure your proxy route in Japan or US, keep "Enhanced Mode" on.
 
-<code>
+调用方法:
+
+```python
 from llm_cutter import LLMCutter
   
 content = "some text"
 llm_cutter = LLMCutter()
 result = llm_cutter.cut_paragraph(content)
-</code>
+```
 
-Output
+输出:
+
 <code>
 {
     {
