@@ -77,7 +77,9 @@ print(tags)
 </code>
 
 ## Embedding Cut
-TODO: Add multithread, exception catch
+TODO: Add multithread, exception catch, add english embedding model.
+
+中文使用m3e_small for embedding, 此模型仅支持中文。
 
 每句话取前后30个字符合并为一个chunk, 计算所有chunk之间的distance(1-similarity), 再根据threshold找出几个离群点进行切割。
 如果只需要切割而无需带上tags, 可以设置参数with_tags=False
