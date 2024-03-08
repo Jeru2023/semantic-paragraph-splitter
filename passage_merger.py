@@ -1,3 +1,4 @@
+from time import sleep
 from sentence_cutter import SentenceCutter
 import re
 from my_utils import timer
@@ -78,16 +79,15 @@ class PassageMerger:
         """
         status记录sentence和paragraph当前的交叉状态
             head_align：sentence与paragraph头部齐
-            tail_align：sentence与paragraph尾部齐
-            sent_in_para: paragraph包含sentence
-            para_in_sent: sentence包含paragraph
-            para_head：paragraph的头部比sentence头部多
-            sent_head：sentence的头部比paragraph头部多
+            head_para：paragraph的头部比sentence头部多
+            head_sent：sentence的头部比paragraph头部多
         """
         status = 'head_align'  # 开始状态
 
-        while sentences:
-            while True:
+        paragraph_strip = ''
+        sentence_strip = ''
+        while sentences and paragraph_content:
+            while len(paragraph_content):
                 paragraph_strip = paragraph_content[0].strip()
                 if paragraph_strip != '':
                     break
@@ -106,12 +106,11 @@ class PassageMerger:
             while paragraph_strip in sentence_strip:
                 # 3、特殊情况处理。sentence包含small_paragraphh（不合并）
                 if sentence_strip.endswith(paragraph_strip):
-                    status = 'tail_align'
                     flag = 1
                     break
                 del paragraph_content[0]
                 paragraph_strip = paragraph_content[0].strip()
-                status = 'sent_head'  # 循环para_in_sent一直到sent_head(交叉情形处理)或tail_align
+                status = 'head_sent'  # 循环para_in_sent一直到head_sent(交叉情形处理)或head_align(tail_align)
             if flag == 1:
                 # 对于上述情况继续处理
                 merged_sentences.append(sentences[0])
@@ -140,41 +139,47 @@ class PassageMerger:
                         merged_sentences.append(sentences[0])
                         # del paragraph_content[0]
                         del sentences[0]
-                        status = 'para_head'
+                        status = 'head_para'
                         continue
                     merged_sentences[-1] += sentences[0]
                     # del paragraph_content[0]
                     del sentences[0]
-                    status = 'para_head'
+                    status = 'head_para'
                     continue
                 # 2、sentence所在的段落，不满足small_paragraphh，不需要合并（不合并）
                 merged_sentences.append(sentences[0])
                 # del paragraph_content[0]
                 del sentences[0]
-                status = 'para_head'
+                status = 'head_para'
                 continue
 
             # 4、特殊情况处理。sentence和small_paragraph相互交叉
             # 1）small_paragraph尾部与sentence交叉（向上合并）
-            if status == 'para_head':
+            if status == 'head_para':
                 if flag_small_paragrah == 1:
                     merged_sentences[-1] += sentences[0]
                 else:
                     merged_sentences.append(sentences[0])
                 del paragraph_content[0]
                 del sentences[0]
-                status = 'para_head'
+                status = 'head_para'
                 continue
             # 2）small_paragraph首部与sentence交叉（向下合并）
-            if status == 'sent_head':
+            if status == 'head_sent':
                 if flag_small_paragrah == 1:
                     merged_sentences.append(sentences[0])
                 else:
                     merged_sentences.append(sentences[0])
                 del sentences[0]
                 del paragraph_content[0]
-                status = 'sent_head'
+                status = 'head_sent'
                 continue
+
+            import time
+            time.sleep(1)
+            print(f"sentence_strip: \n{sentence_strip}")
+            print(f"paragraph_strip: \n{paragraph_strip}")
+            break
 
         self.sentences = merged_sentences
 
@@ -211,4 +216,4 @@ if __name__ == '__main__':
     pm = PassageMerger(content)
 
     passages = pm.merge()
-    [print(pa_) for pa_ in passages]
+    [print(f"{'-'*79}\npa_{i_}: \n{pa_}") for i_, pa_ in enumerate(passages)]
