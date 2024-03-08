@@ -6,6 +6,27 @@
   </a>
 </div>
 
+## Extract Keywords
+TODO: to support english text extraction
+
+可以通过top_k参数改变提取关键词的个数。
+TagExtractor中有词性过滤配置
+
+调用方法:
+```python
+from tag_extractor import TagExtractor
+
+content = """
+自巴西进口1.09万吨，环比减少70.6%，同比减少4.6%。）由于锂盐厂持续的长单提货、非洲锂矿集中到港的影响，
+预计2月的到港量仍处相对高位，矿端供应偏宽松。 
+雅化集团在津巴布韦自有矿山Kamativi首批5000吨锂精矿将陆续运达国内。
+"""
+
+tag_extractor = TagExtractor()
+tags = tag_extractor.extract(content)
+print(tags)
+```
+
 ## Embedding Cut
 TODO: Add multithread, exception catch
 
@@ -18,6 +39,12 @@ from embedding_cutter import EmbeddingCutter
 ec = EmbeddingCutter(content)
 result = ec.cut_paragraph()
 ```
+
+输出:
+<code>
+
+</code>
+
 
 输出:
 <code>
