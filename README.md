@@ -1,5 +1,3 @@
-
-
 # Semantic Paragraph Splitter
 
 <div align="center">
@@ -8,7 +6,18 @@
   </a>
 </div>
 
-LLM Cut
+## Embedding Cut
+## LLM Cut
+Put your gemini api key in config/config.ini
+Make sure your proxy route in Japan or US, keep "Enhanced Mode" on.
+
+<code>
+from llm_cutter import LLMCutter
+  
+content = "some text"
+llm_cutter = LLMCutter()
+result = llm_cutter.cut_paragraph(content)
+</code>
 
 Output
 <code>
