@@ -2,9 +2,10 @@
 from sps import SemanticParagraphSplitter
 from passage_merger import PassageMerger
 from my_utils import timer
+import json
 
 
-class ParagraphCutter:
+class EmbeddingCutter:
     def __init__(self, text):
         self.semantic_paragraph_splitter = SemanticParagraphSplitter()
         self.passage_merger = PassageMerger(text)
@@ -14,12 +15,20 @@ class ParagraphCutter:
     def cut_paragraph(self):
         passages = self.passage_merger.merge()
         chunks = self.semantic_paragraph_splitter.split_passages(passages)
-        return chunks
+
+        result = []
+        for chunk in chunks:
+            para_dict = {}
+            para_dict["paragraph"] = chunk
+            result.append(para_dict)
+
+        json_str = json.dumps(result, ensure_ascii=False, indent=4)
+        return json_str
 
 
 if __name__ == '__main__':
     #paragraph = "today is a very nice day, i'm feeling good. how about you?"
-    paragraph = """
+    content = """
     >1供给端：本周国内碳酸锂产量较假期有所增加，锂盐厂家陆续开工，治炼厂库存略有累积。多数检修的锂盐厂将于元宵节前后复工，但大部分停产的外购锂矿的中小型锂盐企业表示将根据市场行情择机恢复生产，初步预计2月碳酸锂产量将环比下滑23%至3.2万吨附近。中长期维度看，今明两年是上游锂矿和盐湖放量的大年，碳酸锂供应过剩的压力较大。消息面上，20日晚上市场有关于江西碳酸锂环保停产的传闻传出，后传闻的内容多数被证伪，但锂盐企业表示近期有相关环保回头看活动。周五上午，澳洲锂生产商ArcadiumLithium在财报中显示，因受成本压力影响，Mt Catt1in矿山在2024年的锂辉石精矿产量预期将从2023年的20.5万吨下降至13万吨（减产约9500吨LCE）。
 》需求端：本周需求端有小幅改善。正极等下游企业已经逐渐采购现货补充原料，但对当前价位的接受度不高。供需双方仍处于博弈中，需求主导价格走势。中游锂电逐渐进入排产旺李，但鉴于电池厂的高库存及订单前置，节后实际补库需求的强度仍需观察。终端市场方面，受节前促销活动刺激购车需求提前释放，春节期间消费者需求不振，且经销商库存仍需消耗，2月国内新能源汽车产销或将继续环比下滑。电动车价格战仍在持续，行业内卷加剧，对应车企降本压力较大。
 》成本端：本周国内锂精矿价格小幅下跌，锂盐生产企业对于原料的补库意愿不强，多持观望情绪。进口方面，由于锂盐厂持续的长单提货、非洲锂矿集中到港的影响，预计2月锂矿到港量仍处相对高位。》策略：本周受消息面影响，碳酸锂期货的价格震荡反弹。深层次原因是，经过前期的持续下跌后，市场对做空的因素已经演绎得比较充分。而随着需求旺季的到来，下游有一定的补库预期，叠加供应端出现的扰动，碳酸锂期货的价格短期可能仍有一定的上行动能。操作上，短期多空资金博弈加剧，消息面扰动较多，建议投资者暂时观望为主。
@@ -42,8 +51,10 @@ if __name__ == '__main__':
 本周碳酸锂基差-1600，较上周环比下降5850。本周碳酸锂近月期货价格震荡走强至97600，而现货价格企稳，近月合约基差转负。电碳与工碳之间的价差环比小幅减少，减少500元/吨至7000元/吨。
 本周碳酸锂合约期限结构为contango结构。远月与近月合约的价差整体较上月有所扩大。连一与近月合约的价差3500，较上周增加3150。01、02及03合约之间的价差较小。主力合约与近月合约的价差4200。
     """
-    pc = ParagraphCutter(paragraph)
-    result = pc.cut_paragraph()
-    for index, chunk in enumerate(result, start=0):  # Python indexes start at zero
-        print('==============')
-        print(index, chunk)
+    ec = EmbeddingCutter(content)
+    result = ec.cut_paragraph()
+
+    print(result)
+    # for index, chunk in enumerate(result, start=0):  # Python indexes start at zero
+    #     print('==============')
+    #     print(index, chunk)

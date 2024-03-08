@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
-from my_utils import timer,load_text
+from my_utils import timer, load_text
 from llms.gemini import Gemini
-
+from loguru import logger
 
 class LLMCutter:
     def __init__(self):
@@ -17,7 +17,7 @@ class LLMCutter:
         prompt = self.load_prompt_template()
 
         prompt = prompt.format(content=text)
-        # logger.debug(f"prompt: {prompt}")
+        logger.debug(f"prompt: {prompt}")
         return prompt
 
     @timer

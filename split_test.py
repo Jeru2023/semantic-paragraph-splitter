@@ -1,5 +1,5 @@
 import pandas
-from paragraph_cutter import ParagraphCutter
+from embedding_cutter import EmbeddingCutter
 import sys
 
 
@@ -16,7 +16,7 @@ sys.stdout = open('output/industry_report_split_output_95_0_30.txt', 'wt')
 #sys.stdout = open('output/news_split_output_95_0_30.txt', 'wt')
 
 for index, row in df.iterrows():
-    pc = ParagraphCutter(row['content'])
+    pc = EmbeddingCutter(row['content'])
     chunks = pc.cut_paragraph()
 
     print(f"Source: {row['source']}")
