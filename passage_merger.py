@@ -73,7 +73,6 @@ class PassageMerger:
         content = self.content
         paragraph_content = SMALL_PARAGRAPH_RE_SPLIT.split(content)
         sentences = self.sentences
-        sentences_mark = []
         merged_sentences = []
 
         """
@@ -177,7 +176,7 @@ class PassageMerger:
     def merge(self):
         self.merge_by_dict()
         self.merge_short_title()
-        self.merge_by_small_paragraph()
+        # self.merge_by_small_paragraph()
         return self.sentences
 
 
