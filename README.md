@@ -7,7 +7,7 @@
 </div>
 
 ## Extract Keywords
-TODO: to support english text extraction
+TODO: to support english text extraction; optimze algo for chinese text.
 
 可以通过top_k参数改变提取关键词的个数。
 
