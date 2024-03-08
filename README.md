@@ -11,6 +11,7 @@ Cloe the project from repo.
 ```
 pip install -r requirements.txt
 ```
+Rename config/config to config/config.ini, replace your own key in the config.ini.
 
 ## Sentence Cut
 TODO: 动态配置中英文双语的参数
@@ -123,7 +124,7 @@ Input token limit	30720
 
 Output token limit	2048
 
-目前测试ChatGLM 32K
+ChatGLM 32K, GPT等模型均已支持, 需要找Jeru索要config.ini配置文件。
 
 LLM Cut效果最佳, 但延时较长，适用于离线切割文本。
 
