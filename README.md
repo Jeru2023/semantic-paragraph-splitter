@@ -7,6 +7,8 @@
 </div>
 
 ## Embedding Cut
+TODO: Add multithread, exception catch
+
 每句话取前后30个字符合并为一个chunk, 计算所有chunk之间的distance(1-similarity), 再根据threshold找出几个离群点进行切割。
 
 调用方法:
@@ -22,6 +24,8 @@ result = ec.cut_paragraph()
 </code>
 
 ## LLM Cut
+TODO: Add retry logic, key pooling, multithread.
+
 LLM Cut效果最佳, 但延时较长，适用于离线切割文本。
 
 Prompt:
