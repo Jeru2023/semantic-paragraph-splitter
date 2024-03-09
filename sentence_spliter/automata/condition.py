@@ -31,7 +31,7 @@ class IsEndSymbolZH(Criteria):
 
     def look_forward(self, state: StrSequence) -> str:
         for i in range(state.v_pointer + 1, state.length):
-            if not self.empty.match(state[i]) or state[i] == '\n':
+            if not self.empty.match(state[i]):
                 return state[i]
         else:
             return state.current_value
@@ -49,9 +49,8 @@ class IsEndSymbolZH(Criteria):
                 return False
             else:
                 return True
-        if self.symbols['end_symbols'].match(state.current_value) and (
-            self.look_forward(state) == '\n' or not self.symbols['all_symbols'].match(
-                self.look_forward(state))):
+        if self.symbols['end_symbols'].match(state.current_value) and not self.symbols['all_symbols'].match(
+                self.look_forward(state)):
             return True
         if (self.is_right_quota(state) or self.is_right_s_quota(state)) and self.symbols['end_symbols'].match(
                 self.look_backward(state)):
