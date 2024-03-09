@@ -1,4 +1,3 @@
-from time import sleep
 from sentence_cutter import SentenceCutter
 import re
 from my_utils import timer
