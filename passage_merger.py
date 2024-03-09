@@ -12,6 +12,7 @@ LEN_SHORT_TITLE = 30
 SMALL_PARAGRAPH_LENGTH = 300  # 定义短段落字数
 SMALL_PARAGRAPH_SENTENCE_COUNT_LIMIT = 3  # 定义短段落句子数量
 SMALL_PARAGRAPH_RE_SPLIT = re.compile(r'(?<=\n)')
+SMALL_PARAGRAPH_RE_SPACE = re.compile(r'\s')
 SMALL_PARAGRAPH_END_SYMBOLS = re.compile(r'(?<=[?\!…;？！。]|\.(?!\d))')
 
 
@@ -72,7 +73,10 @@ class PassageMerger:
                 2）small_paragraph首部与sentence交叉（向下合并）
         """
         content = self.content
-        paragraph_content = SMALL_PARAGRAPH_RE_SPLIT.split(content)
+        paragraph_content = [
+            paragraph_strip for para in SMALL_PARAGRAPH_RE_SPLIT.split(content)
+            if (paragraph_strip := SMALL_PARAGRAPH_RE_SPACE.sub('', para)) != ''
+        ]
         sentences = self.sentences
         merged_sentences = []
 
@@ -87,12 +91,12 @@ class PassageMerger:
         paragraph_strip = ''
         sentence_strip = ''
         while sentences and paragraph_content:
-            while len(paragraph_content):
-                paragraph_strip = paragraph_content[0].strip()
-                if paragraph_strip != '':
-                    break
-                del paragraph_content[0]
-            sentence_strip = sentences[0].strip()
+            paragraph_strip = paragraph_content[0]
+            sentence_strip = SMALL_PARAGRAPH_RE_SPACE.sub('', sentences[0])
+
+            # print("=" * 79)
+            # print(f"sentence_strip: \n{sentence_strip}")
+            # print(f"paragraph_strip: \n{paragraph_strip}")
 
             if sentence_strip == paragraph_strip:
                 # sentence == paragraphh的情况，不合并
@@ -109,8 +113,12 @@ class PassageMerger:
                     flag = 1
                     break
                 del paragraph_content[0]
-                paragraph_strip = paragraph_content[0].strip()
+                if len(paragraph_content):
+                    paragraph_strip = paragraph_content[0]
                 status = 'head_sent'  # 循环para_in_sent一直到head_sent(交叉情形处理)或head_align(tail_align)
+                # print("-" * 34)
+                # print(f"sentence_strip: \n{sentence_strip}")
+                # print(f"paragraph_strip: \n{paragraph_strip}")
             if flag == 1:
                 # 对于上述情况继续处理
                 merged_sentences.append(sentences[0])
@@ -148,9 +156,11 @@ class PassageMerger:
                     continue
                 # 2、sentence所在的段落，不满足small_paragraphh，不需要合并（不合并）
                 merged_sentences.append(sentences[0])
-                # del paragraph_content[0]
                 del sentences[0]
                 status = 'head_para'
+                if paragraph_strip.endswith(sentence_strip):
+                    del paragraph_content[0]
+                    status = 'head_align'
                 continue
 
             # 4、特殊情况处理。sentence和small_paragraph相互交叉
@@ -160,9 +170,14 @@ class PassageMerger:
                     merged_sentences[-1] += sentences[0]
                 else:
                     merged_sentences.append(sentences[0])
-                del paragraph_content[0]
                 del sentences[0]
                 status = 'head_para'
+                del paragraph_content[0]
+                while len(paragraph_content):
+                    if paragraph_strip in sentence_strip:
+                        del paragraph_content[0]
+                        continue
+                    break
                 continue
             # 2）small_paragraph首部与sentence交叉（向下合并）
             if status == 'head_sent':
@@ -171,14 +186,10 @@ class PassageMerger:
                 else:
                     merged_sentences.append(sentences[0])
                 del sentences[0]
-                del paragraph_content[0]
-                status = 'head_sent'
+                # del paragraph_content[0]
+                status = 'head_para'
                 continue
 
-            import time
-            time.sleep(1)
-            print(f"sentence_strip: \n{sentence_strip}")
-            print(f"paragraph_strip: \n{paragraph_strip}")
             break
 
         self.sentences = merged_sentences
@@ -187,7 +198,7 @@ class PassageMerger:
     def merge(self):
         self.merge_by_dict()
         self.merge_short_title()
-        # self.merge_by_small_paragraph()
+        self.merge_by_small_paragraph()
         return self.sentences
 
 
