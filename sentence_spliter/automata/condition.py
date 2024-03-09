@@ -11,6 +11,7 @@ from .abc import Criteria
 from .sequence import StrSequence, EnSequence
 from .symbols import SYMBOLS, SYMBOLS_EN
 from .white_list import data
+import copy
 
 
 class IsEndState(Criteria):
@@ -28,6 +29,9 @@ class IsEndSymbolZH(Criteria):
         self.number = re.compile('[0-9]')
         self.is_right_quota = IsRightQuotaEn()
         self.is_right_s_quota = IsRightSingleQuotaEn()
+        self.is_bracket_close = IsBracketClose(symbols)
+        self.is_quote_close = IsQuoteClose(symbols)
+        self.is_book_close = IsBookClose(symbols)
 
     def look_forward(self, state: StrSequence) -> str:
         for i in range(state.v_pointer + 1, state.length):
@@ -35,6 +39,27 @@ class IsEndSymbolZH(Criteria):
                 return state[i]
         else:
             return state.current_value
+
+    def look_forward_state(self, state: StrSequence) -> StrSequence:
+        state_copy = copy.copy(state)
+        for i in range(state_copy.v_pointer + 1, state_copy.length):
+            # print(f"{state.current_value} -> {state_copy[i]}")
+            if not self.empty.match(state_copy[i]):
+                state_copy.add_to_candidate()
+                return state_copy
+            state_copy.add_to_candidate()
+        else:
+            return state_copy
+
+    def is_right_clone(self, state: StrSequence) -> bool:
+        state = self.look_forward_state(state)
+        if self.symbols['bracket_right'].match(state.current_value) and self.is_bracket_close.accept(state):
+            return True
+        if self.symbols['quotation_right'].match(state.current_value) and self.is_quote_close.accept(state):
+            return True
+        if self.symbols['book_right'].match(state.current_value) and self.is_book_close.accept(state):
+            return True
+        return False
 
     def look_backward(self, state: StrSequence) -> str:
         for i in range(0, state.v_pointer)[::-1]:
@@ -49,9 +74,11 @@ class IsEndSymbolZH(Criteria):
                 return False
             else:
                 return True
-        if self.symbols['end_symbols'].match(state.current_value) and not self.symbols['all_symbols'].match(
-                self.look_forward(state)):
-            return True
+        if self.symbols['end_symbols'].match(state.current_value):
+            if not self.is_right_clone(self.look_forward_state(state)):
+                return True
+            if not self.symbols['all_symbols'].match(self.look_forward(state)):
+                return True
         if (self.is_right_quota(state) or self.is_right_s_quota(state)) and self.symbols['end_symbols'].match(
                 self.look_backward(state)):
             return True
