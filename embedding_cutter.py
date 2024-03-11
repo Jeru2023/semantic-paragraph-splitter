@@ -161,5 +161,4 @@ PEG方法最重要的贡献是提出“对于成长股，PE应当反映未来成
     """
     ec = EmbeddingCutter(content)
     result = ec.cut_paragraph()
-
     print(result)
