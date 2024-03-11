@@ -6,7 +6,7 @@ from my_utils import timer
 
 # 如果一句话中出现以下词语, 则向上合并
 MERGE_DICT = ["因此", "因为", "并且", "所以", "但是", "而且", "然而", "可是", "另外", "此外", "其中", "比如", "例如", "上述", "期间"]
-RE_SHORT_TITLE = re.compile(r'^[\d.]')
+RE_SHORT_TITLE = re.compile(r'^[\d.]+(?:[ .])')
 SMALL_PARAGRAPH_LENGTH = 500
 LEN_SHORT_TITLE = 30
 

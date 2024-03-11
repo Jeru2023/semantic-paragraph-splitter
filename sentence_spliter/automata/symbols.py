@@ -17,6 +17,7 @@ SYMBOLS = {
     'end_symbols': re.compile('([?\!…;？！。\.])'),
     'en_dot': re.compile('\.'),
     'all_symbols': re.compile('([\]\(【\?】。,！[”，\!\.「<>？"（“…《）}》」;:：\){\)\s])')
+    #'all_symbols': re.compile('([?\!…;？！。\.])'),
 }
 
 
