@@ -155,3 +155,6 @@ test/*.csv
 test/labels
 
 result/zh_results
+
+# lsp-pyright
+pyrightconfig.json

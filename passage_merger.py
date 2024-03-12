@@ -195,9 +195,9 @@ class PassageMerger:
 
     @timer
     def merge(self):
+        self.merge_by_small_paragraph()
         self.merge_by_dict()
         self.merge_short_title()
-        self.merge_by_small_paragraph()
         return self.sentences
 
 
